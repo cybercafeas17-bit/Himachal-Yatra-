@@ -10,19 +10,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract Android project
+      - name: Extract updated Android project
         run: |
-          ZIP_FILE=$(find . -maxdepth 3 -type f -iname "*.zip" | head -n 1)
+          ZIP_FILE=$(find . -maxdepth 1 -type f -name 'HimachalYatra-Android-Project-v2.zip' | head -n 1)
           if [ -z "$ZIP_FILE" ]; then
-            echo "ERROR: No ZIP file found in repository"
+            echo "ERROR: HimachalYatra-Android-Project-v2.zip was not found in the repository root."
             exit 1
           fi
-          echo "Extracting $ZIP_FILE"
           unzip -o "$ZIP_FILE" -d .
 
       - name: Set up Java
@@ -36,12 +34,13 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build Himachal Yatra APK
+      - name: Build APK
         run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Himachal-Yatra-APK
+          name: Himachal-Yatra-APK-v2
           path: app/build/outputs/apk/debug/app-debug.apk
+
           
